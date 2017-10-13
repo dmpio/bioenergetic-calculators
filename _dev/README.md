@@ -13,10 +13,10 @@ Teague, Golding, and Dobson were not involved in the generation of this site. Ho
 
 - [Online Calculator](https://dmpio.github.io/bioenergetic-calculators/)
 
-- An html rendition of the #[a(href="https://dmpio.github.io/bioenergetic-calculators/jupyter_notebook/creatine-kinase-clamp.html") Jupyter notebook] 
+- An html rendition of the [Jupyter notebook](https://dmpio.github.io/bioenergetic-calculators/jupyter_notebook/creatine-kinase-clamp.html)
 which explains the process of adjusting equilibrium constants over the creatine kinase clamp.
 
-- A functional copy of the #[a(href="https://dmpio.github.io/bioenergetic-calculators/jupyter_notebook/creatine-kinase-clamp.ipynb") Jupyter notebook]
+- A functional copy of the [Jupyter notebook](https://dmpio.github.io/bioenergetic-calculators/jupyter_notebook/creatine-kinase-clamp.ipynb)
 
 
 **Note:**
