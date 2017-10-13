@@ -1,0 +1,210 @@
+
+include mixins/dropdowns.jade
+include mixins/icons.jade
+include mixins/forms.jade
+include mixins/tooltips.jade
+include mixins/buttons.jade
+include mixins/modal.jade
+
+        
+.container
+    script(src='#{baseUrl}/js/app/ck_clamp_calc.js')
+    script(src='#{baseUrl}/js/app/ck_clamp_app.js')
+    +modal("pH Details", "pHModal")
+        p The pH of a buffer system is dependant upon the temperature. Therefore, it is important to measure the pH at the temperature of the assay.
+        p Note: this calculator assumes the pH is close to neutral. A large deviation from neutrality may violate key assumptions. 
+    
+    +modal("Ionic Strength", "isMdodal")
+        p The ionic strength of solution is calculated by the following equation:
+        p $$\frac{1}{2} \sum_{i=1}^n M_i \times z^2_i$$
+        p For this field, calculate the ionic strength of your buffer BEFORE the addition of phosphocreatine.
+        p It is important to remember that a buffer is composed of weak acid and conjugate base. 
+          | The concentration and charge of these species is dependant upon the pKa of the specific buffer 
+          | and the pH and temperature of the system. If these values are known, the percent 
+          | ionization can be easily calculated from the Henderson–Hasselbalch equation:
+        p $$\text{pH} = \text{pKa} + \log\frac{[\text{Conjugate Base}]}{[\text{Weak Acid}]}$$
+        p
+        p #[a(href='http://www.reachdevices.com/Protein/BiologicalBuffers.html') Reach Devices] 
+          | has an excellent pKa calculator for many biological buffers.
+        p As an example, consider a 100 mM buffer of Potassium MES at 37°C, pH 7.2. The pKa of MES is 6.01:
+        P $$7.2 = 6.01 + \log\frac{[\text{MES}^{-1}]}{[\text{H}\cdot\text{MES}]}$$
+        p Solving the Henderson–Hasselbalch equation shows that ~94% of the MES will be ionized. 
+          | Therefore, the ionic strength is calculated:
+        p $$\frac{1}{2} \times (94 \text{mM} \times (-1)^2 + 100 \text{mM} \times (+1)^2) = 97\text{mM}$$
+        p Be sure to perform this calculation for all ionic species in your system
+    
+    +modal("Free Magnesium", "mgModal")
+        p The free magnesium concentration is an important component of the calculation
+        p Ideally, this value will be empirically determined under the specific experimental conditions of the CK Clamp.
+        p As an alternative, #[a(href='http://maxchelator.stanford.edu/index.html') MaxChelator] can 
+          | be used to estimate the free magnesium of the system. 
+    
+    +modal("Total Phosphate in Buffer", "phosphateModal")
+        p The total concentration of PO#[sub 4]#[sup 3-] added to the buffer prior to the clamp.
+        p The PO#[sub 4]#[sup 3-] will likely be added as a salt in either the monobasic 
+          | (H#[sub 2]PO#[sub 4]#[sup 1-]) or dibasic (H#[sub 1]PO#[sub 4]#[sup 2-]) form. 
+        p This concentration should be included in the calculated ionic strength of your buffer. 
+        h4 NOTE:
+        p The pKa#[sub 2] of 10mM phosphoric acid is ~7. If the pH of your buffer is close to this 
+          | value, the Ionic Strength calculation should account for the concentration of monobasic and dibasic anions.
+        p For example, consider a buffered solution at pH 7 containing 10 mM KH#[sub 2]PO#[sub 4].
+          | Solving the Henderson–Hasselbalch equation shows the ions will be 45% monobasic and 50% dibasic in the solution:
+        p $$\text{pH} = \text{pKa} + \log\frac{\text{H}\text{PO}_4^{2-}}{\text{H}_2\text{PO}_4^{1-}}$$
+    
+    +modal("Free Creatine in Buffer", "creatineModal")
+        p The total concentration of free Creatine added to the buffer prior to the CK clamp assay
+        p Creatine should not be included in the Buffer Ionic Strength calculation. 
+    
+    +modal("Calculated Values", "calcModal")
+        p The first line corresponds to Step 1 of the titration, after ATP has been added to the system. 
+        p The second line corresponds to Step 2 of the titration, after the first addition of PCr.
+        p Each additional line corresponds to subsequent PCr addition steps. 
+    
+    h1 Creatine Kinase Bioenergetic Clamp
+    form(name="topForm" id="topForm")
+        fieldset
+            legend Assay Parameters
+            .col-md-3.col-sm-3(style="white-space: nowrap;")
+                .form-group
+                    label Temperature #[button-xs.btn(disabled="true") #[span.glyphicon(class="glyphicon-question-sign" aria-hidden="true" style="color: #ffffff")]]
+                    .input-group
+                        input.form-control(type="number" id="tempC" value=37.0 name="tempC" style="text-align: center;" min=0 max=150 step=0.1 required) 
+                        span.input-group-addon °C 
+            .col-md-3.col-sm-3(style="white-space: nowrap;")
+                .form-group
+                    label Ionic Strength #[button-xs.btn(id="isMdodalButton" data-toggle="modal" data-target="#isMdodal") #[+icon("question-sign")]]
+                    .input-group
+                        input.form-control(type="number" id="bfrIS" value=170, name="bfrIS" style="text-align: center;" onchange="calcTableIS()" min=10 step=0.1 required) 
+                        span.input-group-addon [mM]
+            .row
+            .col-md-3.col-sm-3(style="white-space: nowrap;")
+                .form-group
+                    label Creatine #[button-xs.btn(id="creatineModalButton" data-toggle="modal" data-target="#creatineModal") #[+icon("question-sign")]]
+                    .input-group
+                        input.form-control(type="number" id="creatine" value=5, name="creatine" style="text-align: center;" step=0.1 min=1 required) 
+                        span.input-group-addon [mM]
+            .col-md-3.col-sm-3(style="white-space: nowrap;")
+                .form-group
+                    label Phosphate #[button-xs.btn(id="phosphateModalButton" data-toggle="modal" data-target="#phosphateModal") #[+icon("question-sign")]]
+                    .input-group
+                        input.form-control(type="number" id="phosphate" value=10, name="phosphate" style="text-align: center;" step=0.1 min=1 required) 
+                        span.input-group-addon [mM]
+            .col-md-3.col-sm-3(style="white-space: nowrap;")
+                .form-group
+                    label pH #[button-xs.btn(id="pHModalButton" data-toggle="modal" data-target="#pHModal") #[+icon("question-sign")]]
+                    .input-group
+                        input.form-control(type="number" id="pH" value=7.1, name="pH" style="text-align: center;" step=0.01 min=5.00 max=9.00 required)
+                    
+        form(id="stepForm", name="stepForm")
+            fieldset
+                legend Titration Steps
+            .col-md-3.col-sm-3.col-xs-6
+                .input-group
+                    span.input-group-btn
+                        button.btn.btn-primary(type="button" id="minusStep") #[+icon("minus-sign")]
+                    input.form-control(type="number" class="no-spinners" id="stepCount" value=3, name="stepCount" style="text-align: center; font-size:large; background-color: #eee;" readonly)
+                    .input-group-btn
+                        button.btn.btn-primary(type="button" id="plusStep") #[+icon("plus-sign")]
+        .row
+        form(id="tableForm", name="tableForm")
+                .col-md-7
+                        table.table.table-striped.text-center
+                            thead.text-center()
+                                tr
+                                    th.text-center #
+                                    th.text-center Addition
+                                    th.text-center Added Conc.
+                                    th.text-center Ionic Strength
+                                    th.text-center Free Mg#[sup 2+] #[button-xs.btn(id="mgModalButton" data-toggle="modal" data-target="#mgModal") #[+icon("question-sign")]]
+                            tbody(id="titrationSteps", name="titrationSteps")
+                                tr(id="step0" name="step0")
+                                    td 0
+                                    td #[span(data-toggle="tooltip" title="Phosphocreatine") PCr]
+                                    td #[.input-group #[input.form-control(type="number" id="conc0" name="pcr0" value=1, style="text-align:center; " size="2" onchange="calcTableIS()" min=0 step=0.1 required)] #[span.input-group-addon [mM]]]
+                                    td #[.input-group #[input.form-control(type="number" class="no-spinners" id="is0" name="is0" style="text-align:center; " size="2" min=0 step=0.1 required)] #[span.input-group-addon [mM]]]
+                                    td #[.input-group #[input.form-control(type="number" class="no-spinners" id="mg0" name="mg0" value='0.5', style="text-align:center; " size="2" min=0 step=0.0001 required)] #[span.input-group-addon [mM]]]
+                                tr(id="step1" name="step1")
+                                    td 1
+                                    td #[span(data-toggle="tooltip" title="Adenosine triphosphate") ATP]
+                                    td #[.input-group #[input.form-control(type="number" id="conc1" name="atp" value=5, style="text-align:center; " size="2" onchange="calcTableIS()" min=0 step=0.1 required)] #[span.input-group-addon [mM]]]
+                                    td #[.input-group #[input.form-control(type="number" class="no-spinners" id="is1" name="is1" value='', style="text-align:center; " size="2" min=0 step=0.1 required)] #[span.input-group-addon [mM]]] 
+                                    td #[.input-group #[input.form-control(type="number" class="no-spinners" id="mg1" name="mg1" value='0.5', style="text-align:center; " size="2" min=0 step=0.0001 required)] #[span.input-group-addon [mM]]]
+                                tr(id="step2" name="step2")
+                                    td 2
+                                    td #[span(data-toggle="tooltip" title="Phosphocreatine") PCr]
+                                    td #[.input-group #[input.form-control(type="number" id="conc2" name="pcr1" value=2, style="text-align:center; " size="2" onchange="calcTableIS()" min=0 step=0.1 required)] #[span.input-group-addon [mM]]]
+                                    td #[.input-group #[input.form-control(type="number" class="no-spinners" id="is2" name="is2" value='', style="text-align:center; " size="2" min=0 step=0.1 required)] #[span.input-group-addon [mM]]]
+                                    td #[.input-group #[input.form-control(type="number" class="no-spinners" id="mg2" name="mg2" value='0.5', style="text-align:center; " size="2" min=0 step=0.0001 required)] #[span.input-group-addon [mM]]]
+        
+        .row
+        .row
+            .col-md
+                .form-group
+                    button.btn-lg.btn-success(id="calculate" name="calculate" onclick="bv_validate()") Calculate
+        
+    
+    form(role="form" name="outputForm" id="outputForm" hidden)
+        fieldset
+            legend Calculated Values #[button-xs.btn(id="calcModalButton" data-toggle="modal" data-target="#calcModal") #[+icon("question-sign")]]
+        .row
+            .col-md-2.col-sm-2.col-xs-5
+                .form-group
+                    label Units
+                    select(name='dGUnits' id='dGUnits' onchange="bv_validate()").select.form-control
+                            .input-md
+                                option(value='J') J/mol
+                                option(value='kJ' selected='selected') kJ/mol
+                                option(value='kCal') kCal/mol
+        .row
+            .col-md-2.col-sm-3.col-xs-6
+                .form-group
+                    label(style="white-space:nowrap;") ΔG' ATP Hydrolysis #[button-xs.btn(id="copy_dGPrime" name="copy_dGPrime" data-clipboard-target="#output_dG_prime" data-toggle="tooltip" title="Copy") #[+icon("share")]]
+                    .input-group
+                        textarea(class="form-control" rows=3 id="output_dG_prime" name="output_dG_prime" readonly)
+            .col-md-2.col-md-offset-1.col-sm-3.col-sm-offset-1.col-sm-offset-1.col-xs-6
+                .form-group
+                    label(style="white-space:nowrap;") ΔG°' ATP Hydrolysis #[button-xs.btn(id="copy_dGNaughtPrime" name="copy_dGNaughtPrime" data-clipboard-target="#output_dG_naught_prime" data-toggle="tooltip" title="Copy") #[+icon("share")]]
+                    .input-group
+                        textarea(class="form-control" rows=3 id="output_dG_naught_prime" name="output_dG_naught_prime" readonly)
+        .row    
+            .col-md-2.col-sm-3.col-xs-6
+                .form-group
+                    label(style="white-space:nowrap;") K#[sub eq] ATP Hydrolysis #[button-xs.btn(id="copy_keqATP" data-clipboard-target="#output_keq_atp" data-toggle="tooltip" title="Copy") #[+icon("share")]]
+                    .input-group
+                        textarea(class="form-control" rows=3 id="output_keq_atp" name="output_keq_atp" readonly)
+            .col-md-2.col-md-offset-1.col-sm-3.col-sm-offset-1.col-sm-offset-1.col-xs-6
+                .form-group
+                    label(style="white-space:nowrap;") K#[sub eq] Creatine Kinase #[button-xs.btn(id="copy_keqCK" data-clipboard-target="#output_keq_ck" data-toggle="tooltip" title="Copy") #[+icon("share")]]
+                    .input-group
+                        textarea(class="form-control" rows=3 id="output_keq_ck" name="output_keq_ck" readonly) 
+        
+        .row
+            .col-md-2.col-sm-2.col-xs-5
+                .form-group
+                    label Units
+                    select(name='concUnits' id='concUnits' onchange="bv_validate()").select.form-control
+                            .input-md
+                                option(value='M') [M]
+                                option(value='mM' selected='selected') [mM]
+        .row
+            .col-md-2.col-sm-3.col-xs-6
+                .form-group
+                    label ATP #[button-xs.btn(id="copy_atpConc" data-clipboard-target="#output_atp" data-toggle="tooltip" title="Copy") #[+icon("share")]]
+                    .input-group
+                        textarea(class="form-control" rows=3 id="output_atp" name="output_atp" readonly)
+            .col-md-2.col-md-offset-1.col-sm-3.col-sm-offset-1.col-xs-6
+                .form-group
+                    label ADP #[button-xs.btn(id="copy_adpConc" data-clipboard-target="#output_adp" data-toggle="tooltip" title="Copy") #[+icon("share")]]
+                    .input-group
+                        textarea(class="form-control" rows=3 id="output_adp" name="output_adp" readonly)
+        .row    
+            .col-md-2.col-sm-3.col-xs-6
+                .form-group
+                    label PCr #[button-xs.btn(id="copy_pcrConc" data-clipboard-target="#output_pcr" data-toggle="tooltip" title="Copy") #[+icon("share")]]
+                    .input-group
+                        textarea(class="form-control" rows=3 id="output_pcr" name="output_pcr" readonly)
+            .col-md-2.col-md-offset-1.col-sm-3.col-sm-offset-1.col-sm-offset-1.col-xs-6
+                .form-group
+                    label Creatine #[button-xs.btn(id="copy_crConc" data-clipboard-target="#output_cr" data-toggle="tooltip" title="Copy") #[+icon("share")]]
+                    .input-group
+                        textarea(class="form-control" rows=3 id="output_cr" name="output_cr" readonly)

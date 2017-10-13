@@ -1,0 +1,18 @@
+nav.navbar.navbar-default.navbar-fixed-top(role="navigation")
+    .container-fluid
+        .navbar-header
+            a.navbar-brand(href='#{baseUrl}/')= name
+        .collapse.navbar-collapse
+            ul.nav.navbar-nav.navbar-right
+                li
+                    a(href='#{baseUrl}/') About
+                li
+                    a(href="#{baseUrl}/theory") Theory
+                li(class="dropdown")
+                    a(href="#" class="dropdown-toggle" data-toggle="dropdown") Calculators #[.caret]
+                    ul(class="dropdown-menu")
+                        li #[a(href="#{baseUrl}/ck_clamp") Creatine Kinase Bioenergetic Clamp]
+                        li #[a(href="#{baseUrl}/gibbs_atp") Gibbs Energy of ATP Hydrolysis]
+                        li #[a(href="#{baseUrl}/ck_eq") Creatine Kinase Equilibrium Constant]
+                        li #[a(href="#{baseUrl}/ak_eq") Adenylate Kinase Equilibrium Constant]
+

@@ -1,0 +1,92 @@
+
+include mixins/dropdowns.jade
+include mixins/icons.jade
+include mixins/forms.jade
+include mixins/tooltips.jade
+include mixins/buttons.jade
+include mixins/modal.jade
+
+        
+.container
+    script(src='#{baseUrl}/js/app/ak_eq_calc.js')
+    script(src='#{baseUrl}/js/app/ak_eq_app.js')
+    +modal("pH Details", "pHModal")
+        p The pH of a buffer system is dependant upon the temperature. Therefore, it is important 
+          | to measure the pH at the temperature of the assay.
+        p Note: this calculator assumes the pH is close to neutral. A large deviation from 
+          | neutrality may violate key assumptions. 
+    
+    +modal("Ionic Strength", "isMdodal")
+        p The ionic strength of solution is calculated by the following equation:
+        p $$\frac{1}{2} \sum_{i=1}^n M_i \times z^2_i$$
+        p For this field, calculate the ionic strength of your buffer BEFORE the addition of 
+          | phosphocreatine.
+        p It is important to remember that a buffer is composed of weak acid and conjugate base. 
+          | The concentration and charge of these species is dependant upon the pKa of the specific 
+          | buffer and the pH and temperature of the system. 
+          | If these values are known, the percent ionization can be easily calculated from the 
+          | Henderson–Hasselbalch equation:
+        p $$\text{pH} = \text{pKa} + \log\frac{[\text{Conjugate Base}]}{[\text{Weak Acid}]}$$
+        p
+        p #[a(href='http://www.reachdevices.com/Protein/BiologicalBuffers.html') Reach Devices] 
+          | has an excellent pKa calculator for many biological buffers.
+        p As an example, consider a 100 mM buffer of Potassium MES at 37°C, pH 7.2. The pKa of 
+          | MES is 6.01:
+        P $$7.2 = 6.01 + \log\frac{[\text{MES}^{-1}]}{[\text{H}\cdot\text{MES}]}$$
+        p Solving the Henderson–Hasselbalch equation shows that ~94% of the MES will be ionized. 
+          | Therefore, the ionic strength is calculated:
+        p $$\frac{1}{2} \times (94 \text{mM} \times (-1)^2 + 100 \text{mM} \times (+1)^2) = 97\text{mM}$$
+        p Be sure to perform this calculation for all ionic species in your system
+    
+    +modal("Free Magnesium", "mgModal")
+        p The free magnesium concentration is an important component of the calculation
+        p Ideally, this value will be empirically determined under the specific experimental
+          | conditions.
+        p As an alternative, #[a(href='http://maxchelator.stanford.edu/index.html') MaxChelator] 
+          | can be used to estimate the free magnesium of the system. 
+    
+    
+    h1 Adenylate Kinase Equilibrium
+    form(name="topForm" id="topForm")
+        fieldset
+            legend Parameters
+            .col-md-3.col-sm-3(style="white-space: nowrap;")
+                .form-group
+                    label Temperature #[button-xs.btn(disabled="true") #[span.glyphicon(class="glyphicon-question-sign" aria-hidden="true" style="color: #ffffff")]]
+                    .input-group
+                        input.form-control(type="number" id="tempC" value=37.0 name="tempC" style="text-align: center;" min=0 max=150 step=0.1 required) 
+                        span.input-group-addon °C 
+            .col-md-3.col-sm-3(style="white-space: nowrap;")
+                .form-group
+                    label Ionic Strength #[button-xs.btn(id="isMdodalButton" data-toggle="modal" data-target="#isMdodal") #[+icon("question-sign")]]
+                    .input-group
+                        input.form-control(type="number" id="bfrIS" value=170, name="bfrIS" style="text-align: center;" onchange="calcTableIS()" min=10 step=0.1 required) 
+                        span.input-group-addon [mM]
+            .col-md-3.col-sm-3(style="white-space: nowrap;")
+                .form-group
+                    label Free Mg#[sup 2+] #[button-xs.btn(id="mgModalButton" data-toggle="modal" data-target="#mgModal") #[+icon("question-sign")]]
+                    .input-group
+                        input.form-control(type="number" id="mg" value=0.5, name="mg" style="text-align: center;" step=0.0001 min=0.0001 required)
+                        span.input-group-addon [mM]
+            .col-md-3.col-sm-3(style="white-space: nowrap;")
+                .form-group
+                    label pH #[button-xs.btn(id="pHModalButton" data-toggle="modal" data-target="#pHModal") #[+icon("question-sign")]]
+                    .input-group
+                        input.form-control(type="number" id="pH" value=7.1, name="pH" style="text-align: center;" step=0.01 min=5.00 max=9.00 required)
+
+        .row
+            .col-md-3
+                .form-row
+                    button.btn-lg.btn-success(style="margin-bottom: 2em; margin-top: 2em;" id="calculate" name="calculate" onclick="bv_validate()") Calculate
+    .row
+        
+    
+    form(role="form" name="outputForm" id="outputForm" hidden)
+        fieldset
+            legend Calculated Value
+        
+            .col-md-2.col-sm-3.col-xs-6
+                .form-group
+                    label(style="white-space:nowrap;") K#[sub eq] Adenylate Kinase #[button-xs.btn(id="copy_keqAK" data-clipboard-target="#output_keq_ak" data-toggle="tooltip" title="Copy") #[+icon("share")]]
+                    .input-group
+                        textarea(class="form-control" rows=3 id="output_keq_ak" name="output_keq_ak" readonly) 
