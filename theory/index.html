@@ -1,0 +1,87 @@
+<!DOCTYPE html><html><head><meta charset="utf8"/><title>Bioenergetic Calculators</title><link rel="stylesheet" href="/bioenergetic-calculators/css/global.css"/><link rel="stylesheet" href="/bioenergetic-calculators/css/themes/default/Google_OpenSans.css"/><link rel="stylesheet" href="/bioenergetic-calculators/css/themes/default/bootstrapValidator.min.css"/><script type="text/x-mathjax-config" src="/bioenergetic-calculators/js/mathjax/config/local.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="/bioenergetic-calculators/js/jquery/jquery.min.js"></script><script src="/bioenergetic-calculators/js/bootstrap/bootstrap.min.js"></script><script src="/bioenergetic-calculators/js/bootstrapValidator/bootstrapValidator.min.js"></script><script src="/bioenergetic-calculators/js/clipboard/clipboard.min.js"></script></head><body><header><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="/bioenergetic-calculators/" class="navbar-brand">Bioenergetic Calculators</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav navbar-right"><li><a href="/bioenergetic-calculators/">About</a></li><li><a href="/bioenergetic-calculators/theory">Theory</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Calculators <div class="caret"></div></a><ul class="dropdown-menu"><li><a href="/bioenergetic-calculators/ck_clamp">Creatine Kinase Bioenergetic Clamp</a></li><li><a href="/bioenergetic-calculators/gibbs_atp">Gibbs Energy of ATP Hydrolysis</a></li><li><a href="/bioenergetic-calculators/ck_eq">Creatine Kinase Equilibrium Constant</a></li><li><a href="/bioenergetic-calculators/ak_eq">Adenylate Kinase Equilibrium Constant</a></li></ul></li></ul></div></div></nav></header><main><main class="conatiner"><div class="row"><div class="col-md-offset-1"><h1 class="display-4 m-b-2"> Theory</h1></div></div><div class="row"><div class="col-md-9 col-md-offset-1"><div class="panel panel-default"><div class="panel-heading"><h4>Information</h4></div><div class="panel-body"> <p>This page provides a brief overview of the equations, data, 
+and theory used to correct the equilibrium constants. 
+For a more rigorous description of the theory and assumptions involved in adjusting equilibrium constants, please consult the <a href="/bioenergetic-calculators/#references">references</a>. </p><p>For a step-by-step walkthrough of the adjustment calculations over the CK clamp, please consult this <a href="/bioenergetic-calculators/_jupyter_notebook/creatine-kinase-clamp.html">Jupyter notebook</a>. This document contains descriptions of the process 
+alongside Python code that implements the calculations.</p></div></div></div></div><div class="row"><div class="col-md-9 col-md-offset-1"><div class="panel panel-default"><div class="panel-heading"><h4>Chemical Equations</h4></div><div class="panel-body"> <p>The Chemical Equations for the hydrolysis of ATP, the Creatine Kinase reaction, 
+and the Adenylate Kinase reaction are listed below</p>$$
+K_{\text{ref ATP}} = \frac {[\text{ADP}^{3-}][\text{HPO}_4^{2-}][\text{H}^{+}]}
+{[\text{ATP}^{4-}][\text{H}_2\text{O}]}
+$$
+$$
+K_{\text{ref CK}} = \frac {[\text{ATP}^{4-}][\text{Cr}]}
+{[\text{ADP}^{3-}][\text{PCr}^{2-}][\text{H}^{+}]}
+$$
+$$
+K_{\text{ref AK}} = \frac {[\text{ATP}^{4-}][\text{AMP}^{2-}]}
+{[\text{ADP}^{3-}]^2}
+$$</div></div></div></div><div class="row"><div class="col-md-9 col-md-offset-1"><div class="panel panel-default"><div class="panel-heading"><h4>Apparent Equilibrium Constants</h4></div><div class="panel-body"> <p>The apparent equilibrium constant (K`) for the above chemical equations 
+is related to the Reference Equilibrium Constant (Kref, which is measured 
+under specific experimental conditions) through the following relationship:</p>$$
+K^\prime_{ATP} = \frac {K_{\text{ref ATP}}}{[\text{H}{^+}]}
+\frac{
+\left\{1 + \frac {[\text{H}{^+}]}
+                 {K_{\text{a}_{\text{ADP}}}}
+                 + K_{\text{b}_{\text{MgADP}}}[\text{Mg}^{2+}]
+                 + \frac {K_{\text{b}_{\text{MgHADP}}} [\text{H}{^+}][\text{Mg}^{2+}]}
+                         {K_{\text{a}_{\text{ADP}}}}
+\right\}
+\left\{ 1 + \frac {[\text{H}{^+}]}
+         {K_{\text{a}_{\text{HPO}{_4}}}}
+ + K_{\text{b}_{\text{MgHPO}{_4}}}[\text{Mg}^{2+}]
+\right\}
+}
+{
+\left\{1 + \frac {[\text{H}{^+}]}
+                 {K_{\text{a}_{\text{ATP}}}}
+                 + K_{\text{b}_{\text{MgATP}}}[\text{Mg}^{2+}]
+                 + \frac {K_{\text{b}_{\text{MgHATP}}} [\text{H}{^+}][\text{Mg}^{2+}]}
+                         {K_{\text{a}_{\text{ATP}}}}
+\right\}
+}$$
+$$
+K^\prime_{CK} = K_{\text{ref CK}} 
+   \frac
+   {
+   [\text{H}{^+}]\left\{1 + \frac {[\text{H}{^+}]}
+                           {K_{\text{a}_{\text{ATP}}}}
+                   + K_{\text{b}_{\text{MgATP}}}[\text{Mg}^{2+}]
+                   + \frac {K_{\text{b}_{\text{MgHATP}}} [\text{H}{^+}] [\text{Mg}^{2+}]}
+                           {K_{\text{a}_{\text{ATP}}}}
+           \right\}
+   }
+   {
+   \left\{1 + \frac {[\text{H}{^+}]}
+                    {K_{\text{a}_{\text{ADP}}}}
+            + K_{\text{b}_{\text{MgADP}}}[\text{Mg}^{2+}]
+            + \frac {K_{\text{b}_{\text{MgHADP}}} [\text{H}{^+}] [\text{Mg}^{2+}]}
+                    {K_{\text{a}_{\text{ADP}}}}
+   \right\}
+   \left\{1 + \frac {[\text{H}{^+}]}
+                    {K_{\text{a}_{\text{PCr}}}}
+            + K_{\text{b}_{\text{MgPCr}}}[\text{Mg}^{2+}]
+   \right\}
+   }$$
+$$
+K^\prime_{ATP} = \frac {K_{\text{ref ATP}}}{[\text{H}{^+}]}
+\frac{
+\left\{1 + \frac {[\text{H}{^+}]}
+                 {K_{\text{a}_{\text{ADP}}}}
+                 + K_{\text{b}_{\text{MgADP}}}[\text{Mg}^{2+}]
+                 + \frac {K_{\text{b}_{\text{MgHADP}}} [\text{H}{^+}][\text{Mg}^{2+}]}
+                         {K_{\text{a}_{\text{ADP}}}}
+\right\}
+\left\{ 1 + \frac {[\text{H}{^+}]}
+         {K_{\text{a}_{\text{HPO}{_4}}}}
+ + K_{\text{b}_{\text{MgHPO}{_4}}}[\text{Mg}^{2+}]
+\right\}
+}
+{
+\left\{1 + \frac {[\text{H}{^+}]}
+                 {K_{\text{a}_{\text{ATP}}}}
+                 + K_{\text{b}_{\text{MgATP}}}[\text{Mg}^{2+}]
+                 + \frac {K_{\text{b}_{\text{MgHATP}}} [\text{H}{^+}][\text{Mg}^{2+}]}
+                         {K_{\text{a}_{\text{ATP}}}}
+\right\}
+}$$<p>Each expression contained within  {}  represents one of the ions within the Kref expressed as 
+a function of its its acid dissociation and magnesium binding properties.
+These are also equilibrium constants and must be adjusted for ionic strenght, pH,
+free magnesium, and temperature of the system. These variables along with their corresponding values are summarized in the <a href="#constants">table below</a></p></div></div></div></div><div class="row"><div class="col-md-9 col-md-offset-1"><div class="panel panel-default"><div class="panel-heading"><h4>Vant Hoff Equation</h4></div><div class="panel-body">Used to adjust the temperature of K<sub>ref</sub></div><p>$$\ln\left(\frac{K_2}{K_1}\right) = -\frac{\Delta H ^\circ}{R}\left( \frac{1}{T_2} - \frac{1}{T_1} \right)$$</p><ul>\(R = 8.3144598 \frac{J}{K mol}\)</ul><ul>\(K_1 = K_{ref_{I=0}}\)</ul><ul>\(T_1 = \) Temperature of \(K_1\)</ul><ul>\(K_2 = K_{ref_{I=0}}\) at new temperature \(T_2\)</ul><ul>\(\Delta H^\circ = \) Change in Enthalpy at Ionic Strength 0                                  </ul></div></div></div><div class="row"><div class="col-md-9 col-md-offset-1"><div class="panel panel-default"><div class="panel-heading"><h4>Debye–Hückel</h4></div><div class="panel-body">The osmotic coefficient, \(A\), derived from literature measurements of the static dielectric constant and density of water (Clark and Glew, 1980)</div><p>$$A_m = 3 \left(-16.390 23 + \frac{261.337 1}{T} + 3.368 9633\ln T - 1.437 167\left(\frac{T}{100}\right) + 0.111 995 \left(\frac{T}{100}\right)^2 \right)$$</p><div class="panel-body">\(\gamma\) is the activity coefficient of each separate ionic species in the \(K_{ref}\) where:</div><p>$$\ln γ = \frac{-A_m \sqrt{I} z^2}{1 + B \sqrt{I}}$$</p><ul>\(I= \text{ionic strength} (\frac{mol}{L})\)</ul><ul>\(B = 1.6 \frac{kg^{1/2}}{mol^{1/2}}\)</ul><ul>\(z = \text{charge}\)</ul><div class="panel-body">Using these equations, we can generate the activity coefficient of each separate ionic species within a chemical equilbrium and generate a constant \(\Gamma\):</div><p>$$\Gamma = \frac{\prod \gamma_{\text{products}_{I=\text{finite}}}} {\prod \gamma_{\text{reactants}_{I=\text{finite}}}}$$</p><div class="panel-body">The \(K_{ref}\) at Ionic Strength 0 is related by \(\Gamma\) to the measured \(K_{ref}\):</div><p>$$K_{\text{ref}_{I=O\text{, }T=\text{finite}}} = \Gamma K_{\text{ref}_{I=\text{finite, }T=\text{finite}}}$$</p></div></div></div><div class="row"><div class="col-md-9 col-md-offset-1"><div class="panel panel-default"><div id="constants" class="panel-heading"><h3>Constants for ATP Hydrolysis, Creatine Kinase, and Adenylate Kinase</h3></div><div class="panel-body">Thermodynamic data required to adjust K` and K<sub>ref</sub> to temperature and ionic strength (<a href="/bioenergetic-calculators/#references">Teague, Golding, Dobson 1996</a>)</div></div><table class="table table-striped table-condensed text-center"><thead style="font-size:large"><th class="text-center">Symbol</th><th class="text-center">Reaction</th><th class="text-center">Equilibrium Constant</th><th class="text-center">$$K_{\text{ref}}$$</th><th class="text-center">$$\Delta H{^\circ} (kJ mol^{-1})$$</th></thead><tr><td>$$K_{\text{a}_{\text{ATP}}}$$</td><td>$$\text{HATP}^{3-} \leftrightarrow H{^+} + \text{ATP}^{4-}$$</td><td>$$\frac{[H{^+}][\text{ATP}^{4-}]}{[\text{HATP}^{3-}]}$$</td><td>2.512×10<sup>-8</sup></td><td>-6.30</td></tr><tr><td>$$K_{\text{b}_{\text{MgATP}}}$$</td><td>$$\text{Mg}^{2+} + \text{ATP}^{4-} \leftrightarrow \text{MgATP}^{2-}$$</td><td>$$\frac{[\text{MgATP}^{2-}]}{[\text{Mg}^{2+}][\text{ATP}^{4-}]}$$</td><td>1.514×10<sup>6</sup></td><td>22.90</td></tr><tr><td>$$K_{\text{b}_{\text{MgHATP}}}$$</td><td>$$\text{Mg}^{2+} + \text{HATP}^{3-} \leftrightarrow \text{MgHATP}^{1-}$$</td><td>$$\frac{[\text{MgHATP}^{1-}]}{[\text{Mg}^{2+}][\text{HATP}^{3-}]}$$</td><td>4.266×10<sup>3</sup></td><td>16.90</td></tr><tr><td>$$K_{\text{a}_{\text{ADP}}}$$</td><td>$$\text{HADP}^{2-} \leftrightarrow H{^+} + \text{ADP}^{3-}$$</td><td>$$\frac{[H{^+}][\text{ADP}^{3-}]}{[\text{HADP}^{2-}]}$$</td><td>6.607×10<sup>-8</sup></td><td>-5.60</td></tr><tr><td>$$K_{\text{b}_{\text{MgADP}}}$$</td><td>$$\text{Mg}^{2+} + \text{ADP}^{3-} \leftrightarrow \text{MgADP}^{1-}$$</td><td>$$\frac{[\text{MgADP}^{1-}]}{[\text{Mg}^{2+}][\text{ADP}^{3-}]}$$</td><td>4.466×10<sup>4</sup></td><td>19.0</td></tr><tr><td>$$K_{\text{b}_{\text{MgHADP}}}$$</td><td>$$\text{Mg}^{2+} + \text{HADP}^{2-} \leftrightarrow \text{MgHADP}$$</td><td>$$\frac{[\text{MgHADP}]}{[\text{Mg}^{2+}][\text{HADP}^{2-}]}$$</td><td>3.163×10<sup>2</sup></td><td>12.50</td></tr><tr><td>$$K_{\text{a}_{\text{AMP}}}$$</td><td>$$\text{HAMP}^{1-} \leftrightarrow H{^+} + \text{AMP}^{2-}$$</td><td>$$\frac{[H{^+}][\text{AMP}^{2-}]}{[\text{HAMP}^{1-}]}$$</td><td>1.862×10<sup>-7</sup></td><td>-5.40</td></tr><tr><td>$$K_{\text{b}_{\text{MgAMP}}}$$</td><td>$$\text{Mg}^{2+} + \text{AMP}^{2-} \leftrightarrow \text{MgAMP}$$</td><td>$$\frac{[\text{MgAMP}^{1-}]}{[\text{Mg}^{2+}][\text{AMP}^{2-}]}$$</td><td>6.165×10<sup>2</sup></td><td>11.30                 </td></tr><tr><td>$$K_{\text{a}_{\text{HPO}{_4}}}$$</td><td>$$\text{H}{_2}\text{PO}{_4}^{1-} \leftrightarrow \text{H}{^+} + \text{HPO}{_4}^{2-}$$</td><td>$$\frac {[\text{HPO}{_4}^{2-}][\text{H}^{+}]}{[\text{H}{_2}\text{PO}{_4}^{1-}]}$$</td><td>6.026×10<sup>-8</sup></td><td>3.60</td></tr><tr><td>$$K_{\text{b}_{\text{MgHPO}{_4}}}$$</td><td>$$\text{Mg}^{2+} + \text{HPO}{_4}^{2-} \leftrightarrow \text{MgHPO}{_4}$$</td><td>$$\frac{[\text{MgHPO}{_4}]}{[\text{Mg}^{2+}][\text{HPO}{_4}^{2-}]}$$</td><td>5.128×10<sup>8</sup></td><td>12.20</td></tr><tr><td>$$K_{\text{a}_{\text{PCr}}}$$</td><td>$$\text{HPCr}^{1-} \leftrightarrow \text{H}{^+} + \text{PCr}^{2-}$$</td><td>$$\frac{[\text{H}{^+}][\text{PCr}^{2-}]}{[\text{HPCr}^{1-}]}$$</td><td>8.854×10<sup>-6</sup> </td><td>2.66</td></tr><tr><td>$$K_{\text{b}_{\text{MgPCr}}}$$</td><td>$$\text{Mg}^{2+} + \text{PCr}^{2-} \leftrightarrow \text{MgPCr}$$</td><td>$$\frac{[\text{MgPCr}]}{[\text{Mg}^{2+}][\text{PCr}^{2-}]}$$</td><td>2.320×10<sup>2</sup></td><td>8.19</td></tr><tr><td>$$K_{\text{eq}_{\text{Creatine Kinase}}}$$</td><td>$$\text{PCr}^{2-} + \text{ADP}^{3-} + \text{H}^+ \leftrightarrow \text{ATP}^{4-} + \text{Cr} $$</td><td>$$\frac{[\text{ATP}^{4-}][\text{Cr}]}{[\text{PCr}^{2-}][\text{ADP}^{3-}][\text{H}^+]}$$</td><td>2.58×10<sup>8</sup></td><td>-17.55</td></tr><tr><td>$$K_{\text{eq}_{\text{ATP Hydrolysis}}}$$</td><td>$$\text{ATP}^{4-} + \text{H}_2\text{O} \leftrightarrow \text{ADP}^{3-} + \text{HPO}{_4}^{2-} + \text{H}^+$$</td><td>$$\frac{[\text{ADP}^{3-}][\text{HPO}{_4}^{2-}][\text{H}^+]}{[\text{ATP}][\text{H}_2\text{O}]}$$</td><td>2.946×10<sup>-1</sup></td><td>-20.50</td></tr><tr><td>$$K_{\text{eq}_{\text{Adenylate Kinase}}}$$</td><td>$$2\text{ADP}^{3-} \leftrightarrow \text{ATP}^{4-} + \text{AMP}^{2-}$$</td><td>$$\frac{[\text{ATP}^{4-}][\text{AMP}^{2-}]}{[\text{ADP}^{3-}]^2}$$</td><td>2.248×10<sup>-1</sup></td><td>-1.50</td></tr></table></div></div></main></main></body></html>
