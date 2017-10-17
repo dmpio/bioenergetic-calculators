@@ -1,15 +1,16 @@
 {
-  "name": "hb-bootstrap",
-  "version": "0.3.0",
-  "homepage": "https://github.com/jvandemo/hb-bootstrap",
+  "name": "bioenergetic-calculators",
+  "version": "0.1.0",
+  "homepage": "https://github.com/dmpio/bioenergetic-calculators",
   "authors": [
-    "Jurgen Van de Moere <jurgen.van.de.moere@gmail.com>"
+    "Michael Davidson"
   ],
-  "description": "Harp Boilerplate of a Bootstrap website",
+  "description": "Bioenergetic Calculators",
   "keywords": [
-    "harp",
-    "boilerplate",
-    "bootstrap"
+    "gibbs-energy",
+    "creatine-kinase",
+    "atp-hydrolysis",
+    "thermodynamics"
   ],
   "license": "MIT",
   "private": true,
