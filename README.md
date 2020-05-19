@@ -24,6 +24,8 @@ which explains the process of adjusting equilibrium constants over the creatine 
 
 - A functional copy of the [Jupyter notebook](https://dmpio.github.io/bioenergetic-calculators/jupyter_notebook/creatine-kinase-clamp.ipynb)
 
+- An R [Shiny App](https://mtdavidson.shinyapps.io/Gibbs_Energy_ATP_Hydrolysis/) to adjust and visualize the Gibbs Energy of ATP Hydrolysis ([source code](https://github.com/dmpio/ATP_Hydrolysis_shinyapp))
+
 
 **Note:**
 To work on this code on your local computer 
